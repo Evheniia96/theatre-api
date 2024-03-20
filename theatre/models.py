@@ -31,6 +31,8 @@ class TheatreHall(models.Model):
 class Play(models.Model):
     title = models.CharField(max_length=55)
     description = models.TextField()
+    actors = models.ManyToManyField(Actor)
+    genres = models.ManyToManyField(Genre)
 
     class Meta:
         ordering = ["title"]
