@@ -40,26 +40,46 @@ class ActorViewSet(
     serializer_class = ActorSerializer
 
 
-class PlayViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
+class PlayViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = Play.objects.all()
     serializer_class = PlaySerializer
 
 
-class PerfomanceViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
+class PerfomanceViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = Perfomance.objects.all()
     serializer_class = PerfomanceSerializer
 
 
-class TheatreHallViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenreViewSet):
+class TheatreHallViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
 
 
-class TicketViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenreViewSet):
+class TicketViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
 
-class ReservationViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenreViewSet):
+class ReservationViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
