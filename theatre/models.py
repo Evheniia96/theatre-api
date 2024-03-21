@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 
 class Actor(models.Model):
@@ -45,11 +46,11 @@ class Play(models.Model):
         return self.title
 
 
-class Perfomance(models.Model):
+class Performance(models.Model):
     play = models.ForeignKey(
         Play,
         on_delete=models.CASCADE,
-        related_name="perfomances"
+        related_name="performances"
     )
     theatre_hall = models.ForeignKey(
         TheatreHall,
@@ -61,7 +62,7 @@ class Perfomance(models.Model):
         ordering = ["-show_time"]
 
     def __str__(self):
-        return (f"Perfomance: {self.play.title},"
+        return (f"Performance: {self.play.title},"
                 f" show time: {self.show_time}")
 
 
@@ -83,8 +84,8 @@ class Reservation(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    perfomance = models.ForeignKey(
-        Perfomance,
+    performance = models.ForeignKey(
+        Performance,
         on_delete=models.CASCADE,
         related_name="tickets"
     )
@@ -94,9 +95,46 @@ class Ticket(models.Model):
         related_name="tickets"
     )
 
+    @staticmethod
+    def validate_ticket(row, seat, theatre_hall):
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
+            (row, "row", "rows"),
+            (seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs = getattr(theatre_hall, theatre_hall_attr_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise ValidationError(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} "
+                                          f"number must be in available range: "
+                                          f"(1, {theatre_hall_attr_name}): "
+                                          f"(1, {count_attrs})"
+                    }
+                )
+
+    def clean(self):
+        Ticket.validate_ticket(
+            self.row,
+            self.seat,
+            self.performance.theatre_hall,
+        )
+
+    def save(
+            self,
+            force_insert=False,
+            force_update=False,
+            using=None,
+            update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
+
     def __str__(self):
-        return (f"Perfomance: {self.perfomance.play}."
+        return (f"Performance: {self.performance.play}."
                 f"Ticket: {self.row} row,{self.seat} seat")
 
     class Meta:
+        unique_together = ("performance", "row", "seat")
         ordering = ["row", "seat"]

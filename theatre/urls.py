@@ -5,7 +5,7 @@ from theatre.views import (
     GenreViewSet,
     ActorViewSet,
     PlayViewSet,
-    PerfomanceViewSet,
+    PerformanceViewSet,
     TheatreHallViewSet,
     TicketViewSet,
     ReservationViewSet,
@@ -13,7 +13,7 @@ from theatre.views import (
 
 router = routers.DefaultRouter()
 router.register("plays", PlayViewSet)
-router.register("perfomances", PerfomanceViewSet)
+router.register("performances", PerformanceViewSet)
 router.register("theatre_halls", TheatreHallViewSet)
 router.register("genres", GenreViewSet)
 router.register("actors", ActorViewSet)

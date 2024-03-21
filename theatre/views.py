@@ -6,7 +6,7 @@ from theatre.models import (
     Genre,
     Actor,
     Play,
-    Perfomance,
+    Performance,
     TheatreHall,
     Ticket,
     Reservation,
@@ -15,7 +15,7 @@ from theatre.serializers import (
     GenreSerializer,
     ActorSerializer,
     PlaySerializer,
-    PerfomanceSerializer,
+    PerformanceSerializer,
     TheatreHallSerializer,
     TicketSerializer,
     ReservationSerializer,
@@ -49,13 +49,13 @@ class PlayViewSet(
     serializer_class = PlaySerializer
 
 
-class PerfomanceViewSet(
+class PerformanceViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     GenericViewSet
 ):
-    queryset = Perfomance.objects.all()
-    serializer_class = PerfomanceSerializer
+    queryset = Performance.objects.all()
+    serializer_class = PerformanceSerializer
 
 
 class TheatreHallViewSet(
