@@ -35,7 +35,7 @@ class TheatreHallSerializer(serializers.ModelSerializer):
 class PlaySerializer(serializers.ModelSerializer):
     class Meta:
         model = Play
-        fields = ("id", "title", "description")
+        fields = ("id", "title", "description", "actors", "genres")
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
