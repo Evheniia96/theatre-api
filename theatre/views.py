@@ -19,6 +19,7 @@ from theatre.serializers import (
     TheatreHallSerializer,
     TicketSerializer,
     ReservationSerializer,
+    PerformanceListSerializer, PerformanceDetailSerializer
 )
 
 
@@ -54,8 +55,14 @@ class PerformanceViewSet(
     mixins.CreateModelMixin,
     GenericViewSet
 ):
-    queryset = Performance.objects.all()
-    serializer_class = PerformanceSerializer
+    queryset = Performance.objects.all().select_related("play", "theatre_hall")
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PerformanceListSerializer
+        elif self.action == "retrieve":
+            return PerformanceDetailSerializer
+        return PerformanceSerializer
 
 
 class TheatreHallViewSet(

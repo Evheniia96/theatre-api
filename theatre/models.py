@@ -10,6 +10,10 @@ class Actor(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=55, unique=True)
@@ -54,7 +58,8 @@ class Performance(models.Model):
     )
     theatre_hall = models.ForeignKey(
         TheatreHall,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="performances"
     )
     show_time = models.DateTimeField()
 
