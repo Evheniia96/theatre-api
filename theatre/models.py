@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from rest_framework.exceptions import ValidationError
 
 
 class Actor(models.Model):
@@ -101,14 +101,14 @@ class Ticket(models.Model):
     )
 
     @staticmethod
-    def validate_ticket(row, seat, theatre_hall):
+    def validate_ticket(row, seat, theatre_hall, exception_class):
         for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
             (row, "row", "rows"),
             (seat, "seat", "seats_in_row"),
         ]:
             count_attrs = getattr(theatre_hall, theatre_hall_attr_name)
             if not (1 <= ticket_attr_value <= count_attrs):
-                raise ValidationError(
+                raise exception_class(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
                                           f"number must be in available range: "
@@ -122,6 +122,7 @@ class Ticket(models.Model):
             self.row,
             self.seat,
             self.performance.theatre_hall,
+            ValidationError
         )
 
     def save(
