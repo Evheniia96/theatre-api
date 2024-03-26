@@ -123,7 +123,6 @@ class TheatreHallViewSet(
 
 class TicketViewSet(
     mixins.ListModelMixin,
-    mixins.CreateModelMixin,
     GenericViewSet
 ):
     queryset = Ticket.objects.all()
