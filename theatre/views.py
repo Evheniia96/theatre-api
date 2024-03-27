@@ -1,4 +1,5 @@
 from django.db.models import F, Count
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -29,7 +30,8 @@ from theatre.serializers import (
     PerformanceDetailSerializer,
     PlayListSerializer,
     PlayDetailSerializer,
-    ReservationListSerializer, PlayImageSerializer
+    ReservationListSerializer,
+    PlayImageSerializer,
 )
 
 
@@ -59,7 +61,7 @@ class PlayViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
-    GenericViewSet
+    GenericViewSet,
 ):
     queryset = Play.objects.all().prefetch_related("actors", "genres")
     authentication_classes = (TokenAuthentication,)
@@ -101,11 +103,11 @@ class PlayViewSet(
         return PlaySerializer
 
     @action(
-            methods=["POST"],
-            detail=True,
-            url_path="upload-image",
-            permission_classes=[IsAdminUser],
-        )
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+        permission_classes=[IsAdminUser],
+    )
     def upload_image(self, request, pk=None):
         """Endpoint for uploading image to specific movie"""
         play = self.get_object()
@@ -117,12 +119,34 @@ class PlayViewSet(
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "titles",
+                type={"type": "list"},
+                description="Filter by title (ex. ?titles=title)",
+            ),
+            OpenApiParameter(
+                "genres",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by genres id(ex. ?genres=5,6)",
+            ),
+            OpenApiParameter(
+                "actors",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by actors id(ex. ?actors=1,6)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class PerformanceViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
-    GenericViewSet
+    GenericViewSet,
 ):
     queryset = (
         Performance.objects.all()
@@ -146,9 +170,7 @@ class PerformanceViewSet(
 
 
 class TheatreHallViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    GenericViewSet
+    mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet
 ):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
@@ -156,10 +178,7 @@ class TheatreHallViewSet(
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class TicketViewSet(
-    mixins.ListModelMixin,
-    GenericViewSet
-):
+class TicketViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     authentication_classes = (TokenAuthentication,)
@@ -172,13 +191,10 @@ class ReservationPagination(PageNumberPagination):
 
 
 class ReservationViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    GenericViewSet
+    mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet
 ):
     queryset = Reservation.objects.prefetch_related(
-        "tickets__performance__play",
-        "tickets__performance__theatre_hall"
+        "tickets__performance__play", "tickets__performance__theatre_hall"
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
