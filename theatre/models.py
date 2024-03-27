@@ -36,9 +36,11 @@ class TheatreHall(models.Model):
         return self.rows * self.seats_in_row
 
     def __str__(self):
-        return (f"TheatreHall: {self.name},"
-                f" rows: {self.rows} "
-                f"(seats_in_row: {self.seats_in_row})")
+        return (
+            f"TheatreHall: {self.name},"
+            f" rows: {self.rows} "
+            f"(seats_in_row: {self.seats_in_row})"
+        )
 
 
 def play_image_file_path(instance, filename):
@@ -64,14 +66,10 @@ class Play(models.Model):
 
 class Performance(models.Model):
     play = models.ForeignKey(
-        Play,
-        on_delete=models.CASCADE,
-        related_name="performances"
+        Play, on_delete=models.CASCADE, related_name="performances"
     )
     theatre_hall = models.ForeignKey(
-        TheatreHall,
-        on_delete=models.CASCADE,
-        related_name="performances"
+        TheatreHall, on_delete=models.CASCADE, related_name="performances"
     )
     show_time = models.DateTimeField()
 
@@ -79,16 +77,13 @@ class Performance(models.Model):
         ordering = ["-show_time"]
 
     def __str__(self):
-        return (f"Performance: {self.play.title},"
-                f" show time: {self.show_time}")
+        return f"Performance: {self.play.title}," f" show time: {self.show_time}"
 
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reservations"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations"
     )
 
     class Meta:
@@ -102,14 +97,10 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
     performance = models.ForeignKey(
-        Performance,
-        on_delete=models.CASCADE,
-        related_name="tickets"
+        Performance, on_delete=models.CASCADE, related_name="tickets"
     )
     reservation = models.ForeignKey(
-        Reservation,
-        on_delete=models.CASCADE,
-        related_name="tickets"
+        Reservation, on_delete=models.CASCADE, related_name="tickets"
     )
 
     @staticmethod
@@ -123,26 +114,23 @@ class Ticket(models.Model):
                 raise exception_class(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
-                                          f"number must be in available range: "
-                                          f"(1, {theatre_hall_attr_name}): "
-                                          f"(1, {count_attrs})"
+                        f"number must be in available range: "
+                        f"(1, {theatre_hall_attr_name}): "
+                        f"(1, {count_attrs})"
                     }
                 )
 
     def clean(self):
         Ticket.validate_ticket(
-            self.row,
-            self.seat,
-            self.performance.theatre_hall,
-            ValidationError
+            self.row, self.seat, self.performance.theatre_hall, ValidationError
         )
 
     def save(
-            self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None,
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super(Ticket, self).save(
@@ -150,8 +138,10 @@ class Ticket(models.Model):
         )
 
     def __str__(self):
-        return (f"Performance: {self.performance.play}."
-                f"Ticket: {self.row} row,{self.seat} seat")
+        return (
+            f"Performance: {self.performance.play}."
+            f"Ticket: {self.row} row,{self.seat} seat"
+        )
 
     class Meta:
         unique_together = ("performance", "row", "seat")

@@ -5,15 +5,16 @@ import theatre.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('theatre', '0002_alter_performance_theatre_hall'),
+        ("theatre", "0002_alter_performance_theatre_hall"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='play',
-            name='image',
-            field=models.ImageField(null=True, upload_to=theatre.models.play_image_file_path),
+            model_name="play",
+            name="image",
+            field=models.ImageField(
+                null=True, upload_to=theatre.models.play_image_file_path
+            ),
         ),
     ]
