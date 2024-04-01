@@ -3,6 +3,10 @@
 Welcome to the Theatre API! 
 This API is a Django-based web application designed to manage theatrical performances, theatre sessions, reservations, and related data for a theatre. It provides various endpoints for administrators and authenticated users to interact with the system, offering features such as viewing and filtering performances, managing show sessions, creating reservations, and more.
 
+## DB Structured
+
+![doc screen](static/img/bd_structed_api.png)
+
 ## Getting Started
 Before you begin, make sure you have the following tools and technologies installed:
 
@@ -144,3 +148,7 @@ value: Bearer <token>
 ## Documentation
 - The API is documented using the OpenAPI standard.
 - Access the API documentation by running the server and navigating to http://localhost:8000/api/doc/swagger/ or http://localhost:8000/api/doc/redoc/.
+![doc screen](static/img/Screenshot_2.jpg)
+![doc screen](static/img/Screenshot_3.jpg)
+![doc screen](static/img/Screenshot_4.jpg)
+![doc screen](static/img/Screenshot_5.jpg)
